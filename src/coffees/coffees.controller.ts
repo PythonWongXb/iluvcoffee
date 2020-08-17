@@ -1,20 +1,33 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Patch, Delete, Query } from '@nestjs/common';
+import { CoffeesService } from './coffees.service';
 
 @Controller('coffees')
 export class CoffeesController {
+  constructor(private readonly coffeesService: CoffeesService) {}
+
   @Get()
-  findAll(): string {
-    return 'This action returns all coffees';
+  findAll(@Query() paginationQuery) {
+    // const { limit, offset } = paginationQuery;
+    return this.coffeesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `This action returns #${id} coffee`;
+  findOne(@Param('id') id: string) {
+    return this.coffeesService.findOne(id);
   }
 
   @Post()
   create(@Body() body) {
-    return body;
-    // this action creates a coffee
+    return this.coffeesService.create(body);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body) {
+    return this.coffeesService.update(id, body);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.coffeesService.remove(id);
   }
 }
