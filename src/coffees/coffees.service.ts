@@ -21,56 +21,62 @@ export class CoffeesService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Coffee> {
     const coffee = await this.coffeeRepository.findOne(id, {
       relations: ['flavors'],
     });
-
     if (!coffee) {
       throw new NotFoundException(`Coffee #${id} not found`);
     }
-    
     return coffee;
   }
 
-  async create(createCoffeeDTO: CreateCoffeeDto) {
+  async create(createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
     const flavors = await Promise.all(
-      createCoffeeDTO.flavors.map(name => this.preLoadFlavorByName(name)),
+      createCoffeeDto.flavors.map(name => this.preloadFlavorByName(name))
     );
+
     const coffee = this.coffeeRepository.create({
-      ...createCoffeeDTO,
+      ...createCoffeeDto,
       flavors,
     });
+
     return this.coffeeRepository.save(coffee);
   }
 
-  async update(id: string, updateCoffeeDTO: UpdateCoffeeDto) {
+  async update(id: string, updateCoffeeDto: UpdateCoffeeDto): Promise<Coffee> {
     const flavors = 
-      updateCoffeeDTO.flavors &&
+      updateCoffeeDto.flavors &&
       (await Promise.all(
-        updateCoffeeDTO.flavors.map(name => this.preLoadFlavorByName(name)),
+        updateCoffeeDto.flavors.map(name => this.preloadFlavorByName(name))
       ));
-    const coffee = await this.coffeeRepository.preload({
-      id: +id,
-      ...updateCoffeeDTO,
-      flavors,
-    });
-    if (!coffee) {
-      throw new NotFoundException(`Coffee #${id} not found`);
-    }
-    return this.coffeeRepository.save(coffee);
+    
+      const coffee = await this.coffeeRepository.preload({
+        id: +id,
+        ...updateCoffeeDto,
+        flavors,
+      });
+
+      if (!coffee) {
+        throw new NotFoundException(`Coffee #${id} not found`);
+      }
+
+      return this.coffeeRepository.save(coffee);
   }
 
-  async remove(id: string) {
-    const coffee = await this.coffeeRepository.findOne(id);
+  async remove(id: string): Promise<Coffee> {
+    const coffee = await this.findOne(id);
+
     return this.coffeeRepository.remove(coffee);
   }
 
-  private async preLoadFlavorByName(name: string): Promise<Flavor> {
-    const existingFlavor = this.flavorRepository.findOne({ name });
+  private async preloadFlavorByName(name: string): Promise<Flavor> {
+    const existingFlavor = await this.flavorRepository.findOne({ name });
+
     if (existingFlavor) {
       return existingFlavor;
     }
+
     return this.flavorRepository.create({ name });
   }
 }

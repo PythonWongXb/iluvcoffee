@@ -1,9 +1,9 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
   JoinTable,
-  ManyToMany
+  ManyToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Flavor } from './flavor.entity';
 
