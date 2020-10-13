@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
@@ -7,7 +7,6 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Event } from '../events/entities/event.entity';
 import { Coffee } from './entities/coffee.entity';
 import { Flavor } from './entities/flavor.entity';
-import { COFFEE_BRANDS } from './coffees.constants';
 
 @Injectable()
 export class CoffeesService {
@@ -17,12 +16,9 @@ export class CoffeesService {
     @InjectRepository(Flavor)
     private readonly flavorRepository: Repository<Flavor>,
     private readonly connection: Connection,
-    @Inject(COFFEE_BRANDS) coffeeBrands: string[],
-  ) {
-    console.log('coffeeBrands: ', coffeeBrands)
-  }
+  ) {}
 
-  findAll(paginationQuery: PaginationQueryDto) {
+  findAll(paginationQuery: PaginationQueryDto): Promise<any> {
     const { limit, offset } = paginationQuery;
     return this.coffeeRepository.find({
       relations: ['flavors'],
@@ -80,7 +76,7 @@ export class CoffeesService {
     return this.coffeeRepository.remove(coffee);
   }
 
-  async recommendCoffee(coffee: Coffee) {
+  async recommendCoffee(coffee: Coffee): Promise<any> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
