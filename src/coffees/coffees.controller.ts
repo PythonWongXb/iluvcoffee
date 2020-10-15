@@ -4,6 +4,7 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Public } from '../common/decorators/public.decorator';
+import { Protocol } from 'src/common/decorators/protocol.decorator';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -11,7 +12,8 @@ export class CoffeesController {
 
   @Public()
   @Get()
-  findAll(@Query() paginationQuery: PaginationQueryDto): Promise<any> {
+  findAll(@Protocol('https') protocol: string, @Query() paginationQuery: PaginationQueryDto): Promise<any> {
+    console.log(protocol);
     return this.coffeesService.findAll(paginationQuery);
   }
 
