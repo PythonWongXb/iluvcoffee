@@ -11,7 +11,7 @@ import { LoggingMiddleware } from './middleware/logging.middleware';
       provide: APP_GUARD,
       useClass: ApiKeyGuard,
     }
-  ]
+  ],
 })
 export class CommonModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
