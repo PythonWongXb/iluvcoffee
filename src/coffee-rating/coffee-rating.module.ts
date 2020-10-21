@@ -8,10 +8,10 @@ import { CoffeeRatingService } from './coffee-rating.service';
     DatabaseModule.register(
       {
         type: 'postgres',
-        host: process.env.DATABASE_HOST,
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        port: +process.env.DATABASE_PORT,
+        host: 'localhost',
+        username: 'postgres',
+        password: 'pass123',
+        port: 5432,
       }
     ),
     CoffeesModule
