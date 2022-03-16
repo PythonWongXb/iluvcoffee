@@ -51,7 +51,7 @@ describe('[Feature] Coffees - /coffees', () => {
       }
     }));
     app.useGlobalFilters(new HttpExceptionFilter());
-    
+
     await app.init();
     httpServer = app.getHttpServer();
   });
